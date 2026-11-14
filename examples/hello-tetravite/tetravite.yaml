@@ -1,0 +1,39 @@
+apiVersion: tetravite.dev/v1alpha1
+kind: Tool
+metadata:
+  name: hello-tetravite
+  version: 0.1.0
+  description: Deterministic local test capability
+spec:
+  runtime: python
+  python: '>=3.11'
+  entrypoint: hello.main:main
+  command: hello-tetravite
+  inputSchema: schemas/input.json
+  outputSchema: schemas/output.json
+  capabilities: []
+  limits:
+    timeoutSeconds: 5
+    maxResponseBytes: 2000000
+  security:
+    networkAccess: none
+  tetra:
+    contract:
+      manifest: tetravite.yaml
+      inputSchema: schemas/input.json
+      outputSchema: schemas/output.json
+      interface: json-stdin-stdout
+    execution:
+      runtime: python
+      command: hello-tetravite
+      deterministic: false
+    trust:
+      testCommand: pytest -q
+      validation: json-schema-contract
+      isolation: not-enforced-by-reference-runtime
+    composition:
+      role: tool
+      invocation: synchronous
+      input: json
+      output: json
+      orchestration: external
